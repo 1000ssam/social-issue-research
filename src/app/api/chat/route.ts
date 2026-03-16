@@ -1,4 +1,4 @@
-import { streamText } from 'ai';
+import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 import { buildSystemPrompt } from '@/lib/chat-prompt';
 
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: google('gemini-2.5-flash-preview-05-20'),
     system: buildSystemPrompt(issueTitle, issueDescription),
-    messages,
+    messages: await convertToModelMessages(messages),
   });
 
   return result.toUIMessageStreamResponse();
