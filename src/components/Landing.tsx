@@ -9,84 +9,92 @@ interface LandingProps {
   onFullReset?: () => void;
 }
 
-const ROUNDS: { size: RoundSize; label: string; desc: string }[] = [
-  { size: 64, label: '64강', desc: '전체 80개 이슈 중 64개' },
-  { size: 32, label: '32강', desc: '32개 이슈로 빠르게' },
-  { size: 16, label: '16강', desc: '16개 이슈로 간편하게' },
-  { size: 8, label: '8강', desc: '8개 이슈로 초고속' },
+const ROUNDS: { size: RoundSize; label: string; desc: string; time: string }[] = [
+  { size: 64, label: '64강', desc: '80개 중 64개', time: '~10분' },
+  { size: 32, label: '32강', desc: '32개 이슈', time: '~5분' },
+  { size: 16, label: '16강', desc: '16개 이슈', time: '~3분' },
+  { size: 8, label: '8강', desc: '8개 이슈', time: '~1분' },
 ];
 
 export default function Landing({ onStart, previousWinner, onResume, onFullReset }: LandingProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center py-6 px-4">
-      <div className="max-w-lg w-full animate-slide-up">
-        <div className="text-center mb-8">
-          <div className="text-5xl mb-4">🔍</div>
-          <h1 className="text-2xl font-medium text-[#171717] mb-2">
-            사회문제 탐구 주제 탐색기
+    <div className="min-h-dvh flex flex-col py-6 px-4">
+      <div className="max-w-lg w-full mx-auto flex-1 flex flex-col justify-center animate-slide-up">
+        {/* 헤더 — 컴팩트 */}
+        <div className="text-center mb-5">
+          <h1 className="text-xl sm:text-2xl font-medium text-[#171717] mb-1.5">
+            🔍 사회문제 탐구 주제 탐색기
           </h1>
-          <p className="text-[#525252] font-light leading-relaxed">
-            이상형 월드컵으로 관심 이슈를 선택하고,<br />
-            AI와 대화하며 나만의 탐구 주제를 만들어보세요.
+          <p className="text-sm text-[#525252] font-light">
+            이상형 월드컵 + AI 대화로 나만의 탐구 주제 만들기
           </p>
         </div>
 
+        {/* 이전 주제 — 컴팩트 인라인 */}
         {previousWinner && onResume && (
-          <div className="bg-white rounded-2xl border-2 border-[#D2886F] shadow-sm p-5 mb-4">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-2xl">{previousWinner.emoji}</span>
-              <div>
-                <p className="text-xs text-[#D2886F] font-medium">이전에 선택한 주제</p>
-                <p className="text-sm font-medium text-[#171717]">{previousWinner.title}</p>
-              </div>
+          <button
+            onClick={onResume}
+            className="w-full flex items-center gap-3 p-3 mb-4 rounded-xl border-2 border-[#D2886F] bg-[#FDF6F3] text-left transition-all hover:shadow-md active:scale-[0.98]"
+          >
+            <span className="text-2xl shrink-0">{previousWinner.emoji}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-[#D2886F] font-medium">이전 주제로 계속하기</p>
+              <p className="text-sm text-[#171717] font-medium truncate">{previousWinner.title}</p>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={onResume}
-                className="flex-1 py-2.5 rounded-lg bg-[#D2886F] text-white text-sm font-medium transition-all hover:bg-[#C17760] hover:shadow-md"
-              >
-                이 주제로 계속하기
-              </button>
-              {onFullReset && (
-                <button
-                  onClick={onFullReset}
-                  className="py-2.5 px-4 rounded-lg border border-[#e5e5e5] text-sm text-[#a3a3a3] font-light transition-all hover:border-[#D2886F] hover:text-[#D2886F]"
-                >
-                  초기화
-                </button>
-              )}
-            </div>
-          </div>
+            <span className="text-[#D2886F] text-lg shrink-0">→</span>
+          </button>
         )}
 
-        <div className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-6 mb-6">
-          <h2 className="text-sm font-medium text-[#525252] mb-4">
-            {previousWinner ? '새로운 주제로 시작하기' : '라운드를 선택하세요'}
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            {ROUNDS.map(({ size, label, desc }) => (
+        {/* 라운드 선택 */}
+        <div className="mb-4">
+          {previousWinner && (
+            <p className="text-xs text-[#a3a3a3] font-light mb-2 text-center">또는 새로운 주제 찾기</p>
+          )}
+          <div className="grid grid-cols-4 gap-2">
+            {ROUNDS.map(({ size, label, time }) => (
               <button
                 key={size}
                 onClick={() => onStart(size)}
-                className="p-4 rounded-lg border-2 border-[#e5e5e5] text-left transition-all hover:border-[#D2886F] hover:shadow-md group"
+                className="py-3 rounded-xl border border-[#e5e5e5] text-center transition-all hover:border-[#D2886F] hover:shadow-md active:scale-[0.97] group"
               >
-                <span className="text-xl font-medium text-[#171717] group-hover:text-[#D2886F] transition-colors">
+                <span className="text-lg font-medium text-[#171717] group-hover:text-[#D2886F] transition-colors block">
                   {label}
                 </span>
-                <p className="text-xs text-[#a3a3a3] mt-1">{desc}</p>
+                <span className="text-[10px] text-[#a3a3a3] block mt-0.5">{time}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div className="bg-[#FDF6F3] rounded-lg p-4 text-sm text-[#525252] font-light">
-          <p className="font-medium text-[#D2886F] mb-1">💡 이렇게 진행돼요</p>
-          <ol className="list-decimal list-inside space-y-1 text-xs">
-            <li>이상형 월드컵으로 가장 관심 가는 사회 이슈 선택</li>
-            <li>AI와 5단계 대화로 구체적인 탐구 주제 도출</li>
-            <li>최종 연구 주제를 카드로 정리해서 복사</li>
-          </ol>
+        {/* 안내 — 간결하게 */}
+        <div className="rounded-xl bg-[#f9f9f9] p-3 text-xs text-[#737373] font-light">
+          <div className="flex gap-4 justify-center">
+            <div className="text-center">
+              <span className="text-base block mb-0.5">🏆</span>
+              이슈 월드컵
+            </div>
+            <div className="text-[#D2886F]">→</div>
+            <div className="text-center">
+              <span className="text-base block mb-0.5">💬</span>
+              AI 대화 5단계
+            </div>
+            <div className="text-[#D2886F]">→</div>
+            <div className="text-center">
+              <span className="text-base block mb-0.5">🎯</span>
+              탐구 주제 완성
+            </div>
+          </div>
         </div>
+
+        {/* 초기화 버튼 — 캐시 있을 때만 */}
+        {previousWinner && onFullReset && (
+          <button
+            onClick={onFullReset}
+            className="mt-3 text-xs text-[#a3a3a3] font-light mx-auto block hover:text-[#D2886F] transition-colors"
+          >
+            이전 기록 초기화
+          </button>
+        )}
       </div>
     </div>
   );
