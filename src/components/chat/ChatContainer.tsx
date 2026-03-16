@@ -93,7 +93,7 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
   const displayMessages = useMemo(() => messages.filter((_, i) => i > 0), [messages]);
 
   return (
-    <div className="min-h-screen flex flex-col max-w-2xl mx-auto">
+    <div className="h-dvh flex flex-col max-w-2xl mx-auto">
       {/* 네비게이션 + 헤더 */}
       <div className="sticky top-0 z-10 bg-white border-b border-[#e5e5e5]">
         <div className="flex items-center justify-between px-4 py-2 border-b border-[#f5f5f5]">

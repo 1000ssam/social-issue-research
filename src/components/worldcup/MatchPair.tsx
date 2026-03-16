@@ -10,7 +10,7 @@ interface MatchPairProps {
 
 export default function MatchPair({ match, onSelect }: MatchPairProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch">
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-stretch">
       <div className="flex-1">
         <MatchCard issue={match.a} onClick={() => onSelect(match.a)} side="left" />
       </div>
