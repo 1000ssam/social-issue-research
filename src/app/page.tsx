@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AppPhase, RoundSize, SocialIssue } from '@/lib/types';
 import Landing from '@/components/Landing';
 import WorldCupGame from '@/components/worldcup/WorldCupGame';
@@ -8,10 +8,72 @@ import WinnerReveal from '@/components/worldcup/WinnerReveal';
 import ChatContainer from '@/components/chat/ChatContainer';
 import Footer from '@/components/Footer';
 
+const SESSION_KEY = 'social-issue-research-state';
+
+interface SessionState {
+  phase: AppPhase;
+  roundSize: RoundSize;
+  winner: SocialIssue | null;
+}
+
+function loadSession(): SessionState | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function saveSession(state: SessionState) {
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(state));
+  } catch {
+    // sessionStorage full or unavailable
+  }
+}
+
+function clearSession() {
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 export default function Home() {
   const [phase, setPhase] = useState<AppPhase>('landing');
   const [roundSize, setRoundSize] = useState<RoundSize>(32);
   const [winner, setWinner] = useState<SocialIssue | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  // 세션 복구
+  useEffect(() => {
+    const saved = loadSession();
+    if (saved) {
+      // 월드컵 중간은 복구 불가 → landing으로
+      if (saved.phase === 'worldcup') {
+        setPhase('landing');
+      } else {
+        setPhase(saved.phase);
+        setRoundSize(saved.roundSize);
+        setWinner(saved.winner);
+      }
+    }
+    setHydrated(true);
+  }, []);
+
+  // 상태 변경 시 세션 저장
+  useEffect(() => {
+    if (!hydrated) return;
+    if (phase === 'landing') {
+      clearSession();
+    } else {
+      saveSession({ phase, roundSize, winner });
+    }
+  }, [phase, roundSize, winner, hydrated]);
 
   const handleStart = useCallback((size: RoundSize) => {
     setRoundSize(size);
@@ -34,7 +96,10 @@ export default function Home() {
   const handleRestart = useCallback(() => {
     setPhase('landing');
     setWinner(null);
+    clearSession();
   }, []);
+
+  if (!hydrated) return null;
 
   return (
     <div className="min-h-screen bg-white">

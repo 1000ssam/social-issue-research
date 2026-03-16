@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   const { messages, issueTitle, issueDescription } = await req.json();
 
   const result = streamText({
-    model: google('gemini-2.5-flash-preview-05-20'),
+    model: google('gemini-2.5-flash'),
     system: buildSystemPrompt(issueTitle, issueDescription),
     messages: await convertToModelMessages(messages),
   });
