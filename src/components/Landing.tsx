@@ -1,9 +1,12 @@
 'use client';
 
-import { RoundSize } from '@/lib/types';
+import { RoundSize, SocialIssue } from '@/lib/types';
 
 interface LandingProps {
   onStart: (round: RoundSize) => void;
+  previousWinner?: SocialIssue | null;
+  onResume?: () => void;
+  onFullReset?: () => void;
 }
 
 const ROUNDS: { size: RoundSize; label: string; desc: string }[] = [
@@ -13,7 +16,7 @@ const ROUNDS: { size: RoundSize; label: string; desc: string }[] = [
   { size: 8, label: '8강', desc: '8개 이슈로 초고속' },
 ];
 
-export default function Landing({ onStart }: LandingProps) {
+export default function Landing({ onStart, previousWinner, onResume, onFullReset }: LandingProps) {
   return (
     <div className="min-h-screen flex items-center justify-center py-6 px-4">
       <div className="max-w-lg w-full animate-slide-up">
@@ -28,8 +31,38 @@ export default function Landing({ onStart }: LandingProps) {
           </p>
         </div>
 
+        {previousWinner && onResume && (
+          <div className="bg-white rounded-2xl border-2 border-[#D2886F] shadow-sm p-5 mb-4">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-2xl">{previousWinner.emoji}</span>
+              <div>
+                <p className="text-xs text-[#D2886F] font-medium">이전에 선택한 주제</p>
+                <p className="text-sm font-medium text-[#171717]">{previousWinner.title}</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={onResume}
+                className="flex-1 py-2.5 rounded-lg bg-[#D2886F] text-white text-sm font-medium transition-all hover:bg-[#C17760] hover:shadow-md"
+              >
+                이 주제로 계속하기
+              </button>
+              {onFullReset && (
+                <button
+                  onClick={onFullReset}
+                  className="py-2.5 px-4 rounded-lg border border-[#e5e5e5] text-sm text-[#a3a3a3] font-light transition-all hover:border-[#D2886F] hover:text-[#D2886F]"
+                >
+                  초기화
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="bg-white rounded-2xl border border-[#e5e5e5] shadow-sm p-6 mb-6">
-          <h2 className="text-sm font-medium text-[#525252] mb-4">라운드를 선택하세요</h2>
+          <h2 className="text-sm font-medium text-[#525252] mb-4">
+            {previousWinner ? '새로운 주제로 시작하기' : '라운드를 선택하세요'}
+          </h2>
           <div className="grid grid-cols-2 gap-3">
             {ROUNDS.map(({ size, label, desc }) => (
               <button

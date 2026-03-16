@@ -53,9 +53,10 @@ export default function Home() {
   useEffect(() => {
     const saved = loadSession();
     if (saved) {
-      // 월드컵 중간은 복구 불가 → landing으로
+      // 월드컵 중간은 복구 불가 → landing으로 (winner 유지)
       if (saved.phase === 'worldcup') {
         setPhase('landing');
+        setWinner(saved.winner);
       } else {
         setPhase(saved.phase);
         setRoundSize(saved.roundSize);
@@ -68,7 +69,7 @@ export default function Home() {
   // 상태 변경 시 세션 저장
   useEffect(() => {
     if (!hydrated) return;
-    if (phase === 'landing') {
+    if (phase === 'landing' && !winner) {
       clearSession();
     } else {
       saveSession({ phase, roundSize, winner });
@@ -95,6 +96,11 @@ export default function Home() {
 
   const handleRestart = useCallback(() => {
     setPhase('landing');
+    // winner는 유지 → 랜딩에서 "이전 주제로 계속" 표시용
+  }, []);
+
+  const handleFullReset = useCallback(() => {
+    setPhase('landing');
     setWinner(null);
     clearSession();
   }, []);
@@ -103,7 +109,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {phase === 'landing' && <Landing onStart={handleStart} />}
+      {phase === 'landing' && (
+        <Landing
+          onStart={handleStart}
+          previousWinner={winner}
+          onResume={() => { setPhase('chat'); }}
+          onFullReset={winner ? handleFullReset : undefined}
+        />
+      )}
 
       {phase === 'worldcup' && (
         <WorldCupGame roundSize={roundSize} onComplete={handleWorldCupComplete} onHome={handleRestart} />
