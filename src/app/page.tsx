@@ -41,11 +41,11 @@ export default function Home() {
       {phase === 'landing' && <Landing onStart={handleStart} />}
 
       {phase === 'worldcup' && (
-        <WorldCupGame roundSize={roundSize} onComplete={handleWorldCupComplete} />
+        <WorldCupGame roundSize={roundSize} onComplete={handleWorldCupComplete} onHome={handleRestart} />
       )}
 
       {phase === 'winner' && winner && (
-        <WinnerReveal winner={winner} onStartChat={handleStartChat} />
+        <WinnerReveal winner={winner} onStartChat={handleStartChat} onHome={handleRestart} />
       )}
 
       {(phase === 'chat' || phase === 'complete') && winner && (

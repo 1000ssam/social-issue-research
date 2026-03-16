@@ -6,13 +6,15 @@ import { createBracket, nextRound } from '@/lib/bracket';
 import MatchPair from './MatchPair';
 import RoundIndicator from './RoundIndicator';
 import RoundBreak from './RoundBreak';
+import NavBar from '@/components/NavBar';
 
 interface WorldCupGameProps {
   roundSize: RoundSize;
   onComplete: (winner: SocialIssue) => void;
+  onHome: () => void;
 }
 
-export default function WorldCupGame({ roundSize, onComplete }: WorldCupGameProps) {
+export default function WorldCupGame({ roundSize, onComplete, onHome }: WorldCupGameProps) {
   const [matches, setMatches] = useState<Match[]>(() => createBracket(roundSize));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [winners, setWinners] = useState<SocialIssue[]>([]);
@@ -49,36 +51,42 @@ export default function WorldCupGame({ roundSize, onComplete }: WorldCupGameProp
   // 라운드 전환 브레이크 화면
   if (pendingNextRound) {
     return (
-      <RoundBreak
-        nextRoundSize={pendingNextRound.length}
-        onContinue={handleContinue}
-      />
+      <>
+        <NavBar onHome={onHome} title="이상형 월드컵" />
+        <RoundBreak
+          nextRoundSize={pendingNextRound.length}
+          onContinue={handleContinue}
+        />
+      </>
     );
   }
 
   const currentMatch = matches[currentIndex];
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-6 px-4">
-      <div className="max-w-2xl w-full">
-        <div className="text-center mb-6">
-          <h2 className="text-xl font-medium text-[#171717]">
-            사회 이슈 이상형 월드컵
-          </h2>
-          <p className="text-sm text-[#525252] font-light mt-1">
-            더 관심 가는 이슈를 선택하세요
-          </p>
-        </div>
+    <>
+      <NavBar onHome={onHome} title="이상형 월드컵" />
+      <div className="min-h-[calc(100vh-45px)] flex items-center justify-center py-6 px-4">
+        <div className="max-w-2xl w-full">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-medium text-[#171717]">
+              사회 이슈 이상형 월드컵
+            </h2>
+            <p className="text-sm text-[#525252] font-light mt-1">
+              더 관심 가는 이슈를 선택하세요
+            </p>
+          </div>
 
-        <RoundIndicator
-          totalInRound={matches.length}
-          currentIndex={currentIndex}
-        />
+          <RoundIndicator
+            totalInRound={matches.length}
+            currentIndex={currentIndex}
+          />
 
-        <div key={animKey}>
-          <MatchPair match={currentMatch} onSelect={handleSelect} />
+          <div key={animKey}>
+            <MatchPair match={currentMatch} onSelect={handleSelect} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

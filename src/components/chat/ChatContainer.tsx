@@ -10,6 +10,7 @@ import MessageBubble from './MessageBubble';
 import OptionButtons from './OptionButtons';
 import ChatInput from './ChatInput';
 import TopicSummaryCard from './TopicSummaryCard';
+import NavBar from '@/components/NavBar';
 
 interface ChatContainerProps {
   issue: SocialIssue;
@@ -93,13 +94,21 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
 
   return (
     <div className="min-h-screen flex flex-col max-w-2xl mx-auto">
-      {/* 헤더 */}
+      {/* 네비게이션 + 헤더 */}
       <div className="sticky top-0 z-10 bg-white border-b border-[#e5e5e5]">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <span className="text-2xl">{issue.emoji}</span>
-          <div>
-            <h2 className="text-sm font-medium text-[#171717]">{issue.title}</h2>
-            <p className="text-xs text-[#a3a3a3]">AI와 함께 탐구 주제 만들기</p>
+        <div className="flex items-center justify-between px-4 py-2 border-b border-[#f5f5f5]">
+          <button
+            onClick={onRestart}
+            className="flex items-center gap-1.5 text-sm text-[#525252] font-light transition-colors hover:text-[#D2886F]"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
+              <path d="M8 2L2 7.5V14h4.5v-3.5h3V14H14V7.5L8 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+            </svg>
+            처음으로
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{issue.emoji}</span>
+            <span className="text-xs text-[#a3a3a3] font-light">{issue.title}</span>
           </div>
         </div>
         <StageIndicator currentStage={currentStage} />
