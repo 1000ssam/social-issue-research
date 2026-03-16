@@ -4,6 +4,7 @@ export interface SocialIssue {
   shortDescription: string;
   category: string;
   emoji: string;
+  keyFacts: string[];
 }
 
 export interface Match {

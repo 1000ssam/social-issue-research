@@ -5,6 +5,7 @@ import { SocialIssue, Match, RoundSize } from '@/lib/types';
 import { createBracket, nextRound } from '@/lib/bracket';
 import MatchPair from './MatchPair';
 import RoundIndicator from './RoundIndicator';
+import RoundBreak from './RoundBreak';
 
 interface WorldCupGameProps {
   roundSize: RoundSize;
@@ -16,6 +17,7 @@ export default function WorldCupGame({ roundSize, onComplete }: WorldCupGameProp
   const [currentIndex, setCurrentIndex] = useState(0);
   const [winners, setWinners] = useState<SocialIssue[]>([]);
   const [animKey, setAnimKey] = useState(0);
+  const [pendingNextRound, setPendingNextRound] = useState<SocialIssue[] | null>(null);
 
   const handleSelect = useCallback((winner: SocialIssue) => {
     const newWinners = [...winners, winner];
@@ -29,14 +31,30 @@ export default function WorldCupGame({ roundSize, onComplete }: WorldCupGameProp
       // 최종 우승
       onComplete(newWinners[0]);
     } else {
-      // 다음 라운드
-      const newMatches = nextRound(newWinners);
-      setMatches(newMatches);
-      setWinners([]);
-      setCurrentIndex(0);
-      setAnimKey(prev => prev + 1);
+      // 라운드 끝 → 브레이크 화면
+      setPendingNextRound(newWinners);
     }
   }, [winners, currentIndex, matches, onComplete]);
+
+  const handleContinue = useCallback(() => {
+    if (!pendingNextRound) return;
+    const newMatches = nextRound(pendingNextRound);
+    setMatches(newMatches);
+    setWinners([]);
+    setCurrentIndex(0);
+    setAnimKey(prev => prev + 1);
+    setPendingNextRound(null);
+  }, [pendingNextRound]);
+
+  // 라운드 전환 브레이크 화면
+  if (pendingNextRound) {
+    return (
+      <RoundBreak
+        nextRoundSize={pendingNextRound.length}
+        onContinue={handleContinue}
+      />
+    );
+  }
 
   const currentMatch = matches[currentIndex];
 

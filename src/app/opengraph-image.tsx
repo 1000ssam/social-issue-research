@@ -58,7 +58,7 @@ export default function Image() {
             }}
           />
           <span style={{ fontSize: 18, color: '#a3a3a3', fontWeight: 300 }}>
-            1000쌤
+            김용천 선생님
           </span>
         </div>
       </div>

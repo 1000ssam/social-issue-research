@@ -7,7 +7,7 @@ interface LandingProps {
 }
 
 const ROUNDS: { size: RoundSize; label: string; desc: string }[] = [
-  { size: 64, label: '64강', desc: '전체 70개 이슈 중 64개' },
+  { size: 64, label: '64강', desc: '전체 80개 이슈 중 64개' },
   { size: 32, label: '32강', desc: '32개 이슈로 빠르게' },
   { size: 16, label: '16강', desc: '16개 이슈로 간편하게' },
   { size: 8, label: '8강', desc: '8개 이슈로 초고속' },

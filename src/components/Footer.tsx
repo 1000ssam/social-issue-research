@@ -11,7 +11,7 @@ export default function Footer() {
     <>
       <footer className="py-4 px-4 text-center border-t border-[#e5e5e5]">
         <p className="text-xs text-[#a3a3a3] font-light">
-          © 2026 1000쌤 ·{' '}
+          © 2026 김용천 선생님 ·{' '}
           <button
             onClick={() => setShowChangelog(true)}
             className="text-[#a3a3a3] hover:text-[#D2886F] transition-colors underline"
