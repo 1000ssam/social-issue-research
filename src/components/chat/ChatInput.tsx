@@ -39,7 +39,7 @@ export default function ChatInput({ value, onChange, onSubmit, disabled, placeho
         disabled={disabled}
         placeholder={placeholder ?? '메시지를 입력하세요...'}
         rows={1}
-        className="flex-1 resize-none rounded-lg border border-[#e5e5e5] px-3 py-2 text-sm font-light placeholder:text-[#a3a3a3] focus:border-[#D2886F] focus:ring-1 focus:ring-[#D2886F] focus:outline-none disabled:opacity-50 disabled:bg-[#f5f5f5]"
+        className="flex-1 resize-none rounded-lg border border-[#e5e5e5] px-3 py-2 text-base font-light placeholder:text-[#a3a3a3] focus:border-[#D2886F] focus:ring-1 focus:ring-[#D2886F] focus:outline-none disabled:opacity-50 disabled:bg-[#f5f5f5]"
       />
       <button
         onClick={onSubmit}

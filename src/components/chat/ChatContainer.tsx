@@ -65,9 +65,11 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 자동 스크롤
+  // 자동 스크롤 (첫 메시지 2개까지는 스크롤하지 않음)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 2) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages, isLoading]);
 
   const handleSubmit = () => {
