@@ -85,6 +85,15 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
     sendMessage({ text: option });
   };
 
+  const handleContinueChat = () => {
+    setCurrentOptions([]);
+  };
+
+  const handleResumeChat = () => {
+    setFinalTopic(null);
+    sendMessage({ text: '이 주제가 마음에 들지 않아요. 다른 방향으로 다시 이야기해볼 수 있을까요?' });
+  };
+
   // 메시지에서 태그 제거한 텍스트
   const getCleanText = (parts: Array<{ type: string; text?: string }>) => {
     const raw = parts.filter(p => p.type === 'text').map(p => p.text ?? '').join('');
@@ -135,7 +144,7 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
         )}
 
         {!isLoading && currentOptions.length > 0 && !finalTopic && (
-          <OptionButtons options={currentOptions} onSelect={handleOptionSelect} disabled={isLoading} />
+          <OptionButtons options={currentOptions} onSelect={handleOptionSelect} onContinueChat={handleContinueChat} disabled={isLoading} />
         )}
 
         {error && (
@@ -159,6 +168,7 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
           question={finalTopic.question}
           rationale={finalTopic.rationale}
           onRestart={onRestart}
+          onResumeChat={handleResumeChat}
         />
       )}
 

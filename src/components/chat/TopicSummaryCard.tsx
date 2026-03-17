@@ -7,9 +7,10 @@ interface TopicSummaryCardProps {
   question: string;
   rationale: string;
   onRestart: () => void;
+  onResumeChat: () => void;
 }
 
-export default function TopicSummaryCard({ topic, question, rationale, onRestart }: TopicSummaryCardProps) {
+export default function TopicSummaryCard({ topic, question, rationale, onRestart, onResumeChat }: TopicSummaryCardProps) {
   const [copied, setCopied] = useState(false);
 
   const shareText = `📋 탐구 주제 요약\n\n주제: ${topic}\n연구 질문: ${question}\n선정 근거: ${rationale}`;
@@ -61,25 +62,35 @@ export default function TopicSummaryCard({ topic, question, rationale, onRestart
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={handleCopy}
-            className="flex-1 py-2.5 rounded-lg bg-[#D2886F] text-white text-sm font-medium transition-all hover:bg-[#C17760] hover:shadow-md"
-          >
-            {copied ? '✓ 복사 완료!' : '📋 복사'}
-          </button>
-          <button
-            onClick={handleShare}
-            className="flex-1 py-2.5 rounded-lg border-2 border-[#D2886F] text-[#D2886F] text-sm font-medium transition-all hover:bg-[#D2886F] hover:text-white"
-          >
-            {canShare ? '📤 공유하기' : '📤 복사해서 공유'}
-          </button>
-          <button
-            onClick={onRestart}
-            className="py-2.5 px-3 rounded-lg border border-[#e5e5e5] text-sm text-[#525252] font-light transition-all hover:border-[#D2886F] hover:text-[#D2886F]"
-          >
-            처음부터
-          </button>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <button
+              onClick={handleCopy}
+              className="flex-1 py-2.5 rounded-lg bg-[#D2886F] text-white text-sm font-medium transition-all hover:bg-[#C17760] hover:shadow-md"
+            >
+              {copied ? '✓ 복사 완료!' : '📋 복사'}
+            </button>
+            <button
+              onClick={handleShare}
+              className="flex-1 py-2.5 rounded-lg border-2 border-[#D2886F] text-[#D2886F] text-sm font-medium transition-all hover:bg-[#D2886F] hover:text-white"
+            >
+              {canShare ? '📤 공유하기' : '📤 복사해서 공유'}
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={onResumeChat}
+              className="flex-1 py-2.5 rounded-lg border border-[#e5e5e5] text-sm text-[#525252] font-light transition-all hover:border-[#D2886F] hover:text-[#D2886F]"
+            >
+              주제 다시 정하기
+            </button>
+            <button
+              onClick={onRestart}
+              className="py-2.5 px-3 rounded-lg border border-[#e5e5e5] text-sm text-[#525252] font-light transition-all hover:border-[#D2886F] hover:text-[#D2886F]"
+            >
+              처음부터
+            </button>
+          </div>
         </div>
       </div>
     </div>
