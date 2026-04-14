@@ -82,7 +82,7 @@ export default function TopicSummaryCard({ topic, question, rationale, onRestart
               onClick={onResumeChat}
               className="flex-1 py-2.5 rounded-lg border border-[#e5e5e5] text-sm text-[#525252] font-light transition-all hover:border-[#D2886F] hover:text-[#D2886F]"
             >
-              주제 다시 정하기
+              조금 더 대화하기
             </button>
             <button
               onClick={onRestart}
