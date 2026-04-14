@@ -3,7 +3,7 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { SocialIssue } from '@/lib/types';
+import { SocialIssue, ChatMode } from '@/lib/types';
 import { parseAIResponse, parseFinalTopic } from '@/lib/parse-ai-response';
 import StageIndicator from './StageIndicator';
 import MessageBubble from './MessageBubble';
@@ -13,12 +13,14 @@ import TopicSummaryCard from './TopicSummaryCard';
 import NavBar from '@/components/NavBar';
 
 interface ChatContainerProps {
-  issue: SocialIssue;
+  issue?: SocialIssue;
+  mode?: ChatMode;
   onComplete: () => void;
   onRestart: () => void;
 }
 
-export default function ChatContainer({ issue, onComplete, onRestart }: ChatContainerProps) {
+export default function ChatContainer({ issue, mode = 'guided', onComplete, onRestart }: ChatContainerProps) {
+  const isFree = mode === 'free';
   const [currentStage, setCurrentStage] = useState(1);
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
   const [finalTopic, setFinalTopic] = useState<{ topic: string; question: string; rationale: string } | null>(null);
@@ -28,11 +30,10 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
 
   const transport = useMemo(() => new DefaultChatTransport({
     api: '/api/chat',
-    body: {
-      issueTitle: issue.title,
-      issueDescription: issue.shortDescription,
-    },
-  }), [issue.title, issue.shortDescription]);
+    body: isFree
+      ? { mode: 'free' }
+      : { issueTitle: issue!.title, issueDescription: issue!.shortDescription },
+  }), [isFree, issue]);
 
   const { messages, sendMessage, regenerate, status, error } = useChat({
     transport,
@@ -60,7 +61,9 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
     if (initRef.current) return;
     initRef.current = true;
     sendMessage({
-      text: `저는 "${issue.title}" 주제에 관심이 있어요. 탐구 주제를 정하는 걸 도와주세요.`,
+      text: isFree
+        ? '사회문제 탐구 주제를 정하고 싶어요. 어떤 주제가 좋을지 같이 찾아주세요.'
+        : `저는 "${issue!.title}" 주제에 관심이 있어요. 탐구 주제를 정하는 걸 도와주세요.`,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -118,8 +121,14 @@ export default function ChatContainer({ issue, onComplete, onRestart }: ChatCont
             처음으로
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-lg">{issue.emoji}</span>
-            <span className="text-xs text-[#a3a3a3] font-light">{issue.title}</span>
+            {isFree ? (
+              <span className="text-xs text-[#a3a3a3] font-light">자유 탐색</span>
+            ) : (
+              <>
+                <span className="text-lg">{issue!.emoji}</span>
+                <span className="text-xs text-[#a3a3a3] font-light">{issue!.title}</span>
+              </>
+            )}
           </div>
         </div>
         <StageIndicator currentStage={currentStage} />

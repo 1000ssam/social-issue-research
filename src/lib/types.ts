@@ -14,6 +14,8 @@ export interface Match {
 
 export type AppPhase = 'landing' | 'worldcup' | 'winner' | 'chat' | 'complete';
 
+export type ChatMode = 'guided' | 'free';
+
 export type RoundSize = 64 | 32 | 16 | 8;
 
 export interface ChatStage {

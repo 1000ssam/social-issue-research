@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { AppPhase, RoundSize, SocialIssue } from '@/lib/types';
+import { AppPhase, RoundSize, SocialIssue, ChatMode } from '@/lib/types';
 import Landing from '@/components/Landing';
 import WorldCupGame from '@/components/worldcup/WorldCupGame';
 import WinnerReveal from '@/components/worldcup/WinnerReveal';
@@ -14,6 +14,7 @@ interface SessionState {
   phase: AppPhase;
   roundSize: RoundSize;
   winner: SocialIssue | null;
+  chatMode?: ChatMode;
 }
 
 function loadSession(): SessionState | null {
@@ -47,6 +48,7 @@ export default function Home() {
   const [phase, setPhase] = useState<AppPhase>('landing');
   const [roundSize, setRoundSize] = useState<RoundSize>(32);
   const [winner, setWinner] = useState<SocialIssue | null>(null);
+  const [chatMode, setChatMode] = useState<ChatMode>('guided');
   const [hydrated, setHydrated] = useState(false);
 
   // 세션 복구
@@ -61,6 +63,7 @@ export default function Home() {
         setPhase(saved.phase);
         setRoundSize(saved.roundSize);
         setWinner(saved.winner);
+        if (saved.chatMode) setChatMode(saved.chatMode);
       }
     }
     setHydrated(true);
@@ -69,16 +72,22 @@ export default function Home() {
   // 상태 변경 시 세션 저장
   useEffect(() => {
     if (!hydrated) return;
-    if (phase === 'landing' && !winner) {
+    if (phase === 'landing' && !winner && chatMode === 'guided') {
       clearSession();
     } else {
-      saveSession({ phase, roundSize, winner });
+      saveSession({ phase, roundSize, winner, chatMode });
     }
-  }, [phase, roundSize, winner, hydrated]);
+  }, [phase, roundSize, winner, chatMode, hydrated]);
 
   const handleStart = useCallback((size: RoundSize) => {
+    setChatMode('guided');
     setRoundSize(size);
     setPhase('worldcup');
+  }, []);
+
+  const handleFreeExplore = useCallback(() => {
+    setChatMode('free');
+    setPhase('chat');
   }, []);
 
   const handleWorldCupComplete = useCallback((selected: SocialIssue) => {
@@ -96,12 +105,14 @@ export default function Home() {
 
   const handleRestart = useCallback(() => {
     setPhase('landing');
+    setChatMode('guided');
     // winner는 유지 → 랜딩에서 "이전 주제로 계속" 표시용
   }, []);
 
   const handleFullReset = useCallback(() => {
     setPhase('landing');
     setWinner(null);
+    setChatMode('guided');
     clearSession();
   }, []);
 
@@ -112,8 +123,9 @@ export default function Home() {
       {phase === 'landing' && (
         <Landing
           onStart={handleStart}
+          onFreeExplore={handleFreeExplore}
           previousWinner={winner}
-          onResume={() => { setPhase('chat'); }}
+          onResume={() => { setChatMode('guided'); setPhase('chat'); }}
           onFullReset={winner ? handleFullReset : undefined}
         />
       )}
@@ -126,9 +138,10 @@ export default function Home() {
         <WinnerReveal winner={winner} onStartChat={handleStartChat} onHome={handleRestart} />
       )}
 
-      {(phase === 'chat' || phase === 'complete') && winner && (
+      {(phase === 'chat' || phase === 'complete') && (chatMode === 'free' || winner) && (
         <ChatContainer
-          issue={winner}
+          issue={winner ?? undefined}
+          mode={chatMode}
           onComplete={handleChatComplete}
           onRestart={handleRestart}
         />

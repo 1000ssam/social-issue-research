@@ -1,6 +1,6 @@
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
-import { buildSystemPrompt } from '@/lib/chat-prompt';
+import { buildSystemPrompt, buildFreeExplorePrompt } from '@/lib/chat-prompt';
 
 export const maxDuration = 30;
 
@@ -30,11 +30,15 @@ export async function POST(req: Request) {
     return new Response('Too many requests', { status: 429 });
   }
 
-  const { messages, issueTitle, issueDescription } = await req.json();
+  const { messages, issueTitle, issueDescription, mode } = await req.json();
+
+  const systemPrompt = mode === 'free'
+    ? buildFreeExplorePrompt()
+    : buildSystemPrompt(issueTitle, issueDescription);
 
   const result = streamText({
     model: google('gemini-3.1-flash-lite-preview'),
-    system: buildSystemPrompt(issueTitle, issueDescription),
+    system: systemPrompt,
     messages: await convertToModelMessages(messages),
   });
 

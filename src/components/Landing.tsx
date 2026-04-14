@@ -4,6 +4,7 @@ import { RoundSize, SocialIssue } from '@/lib/types';
 
 interface LandingProps {
   onStart: (round: RoundSize) => void;
+  onFreeExplore: () => void;
   previousWinner?: SocialIssue | null;
   onResume?: () => void;
   onFullReset?: () => void;
@@ -16,7 +17,7 @@ const ROUNDS: { size: RoundSize; label: string }[] = [
   { size: 8, label: '8강' },
 ];
 
-export default function Landing({ onStart, previousWinner, onResume, onFullReset }: LandingProps) {
+export default function Landing({ onStart, onFreeExplore, previousWinner, onResume, onFullReset }: LandingProps) {
   return (
     <div className="min-h-dvh flex flex-col py-6 px-4">
       <div className="max-w-lg w-full mx-auto flex-1 flex flex-col justify-center animate-slide-up">
@@ -47,43 +48,66 @@ export default function Landing({ onStart, previousWinner, onResume, onFullReset
           </button>
         )}
 
-        {/* 라운드 선택 */}
-        <div className="mb-4">
+        {/* 경로 선택 */}
+        <div className="mb-4 space-y-3">
           {previousWinner && (
-            <p className="text-xs text-[#a3a3a3] font-light mb-2 text-center">또는 새로운 주제 찾기</p>
+            <p className="text-xs text-[#a3a3a3] font-light mb-1 text-center">또는 새로운 주제 찾기</p>
           )}
-          <div className="grid grid-cols-4 gap-2">
-            {ROUNDS.map(({ size, label }) => (
-              <button
-                key={size}
-                onClick={() => onStart(size)}
-                className="py-3 rounded-xl border border-[#e5e5e5] text-center transition-all hover:border-[#D2886F] hover:shadow-md active:scale-[0.97] group"
-              >
-                <span className="text-lg font-medium text-[#171717] group-hover:text-[#D2886F] transition-colors block">
-                  {label}
-                </span>
-              </button>
-            ))}
+
+          {/* 경로 A: 월드컵 */}
+          <div>
+            <p className="text-xs text-[#525252] font-medium mb-1.5">🏆 이슈 월드컵으로 시작</p>
+            <div className="grid grid-cols-4 gap-2">
+              {ROUNDS.map(({ size, label }) => (
+                <button
+                  key={size}
+                  onClick={() => onStart(size)}
+                  className="py-3 rounded-xl border border-[#e5e5e5] text-center transition-all hover:border-[#D2886F] hover:shadow-md active:scale-[0.97] group"
+                >
+                  <span className="text-lg font-medium text-[#171717] group-hover:text-[#D2886F] transition-colors block">
+                    {label}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* 구분선 */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-[#e5e5e5]" />
+            <span className="text-xs text-[#a3a3a3] font-light">또는</span>
+            <div className="flex-1 h-px bg-[#e5e5e5]" />
+          </div>
+
+          {/* 경로 B: 자유 탐색 */}
+          <button
+            onClick={onFreeExplore}
+            className="w-full py-3 rounded-xl border border-[#e5e5e5] text-center transition-all hover:border-[#D2886F] hover:shadow-md active:scale-[0.97] group"
+          >
+            <span className="text-sm font-medium text-[#525252] group-hover:text-[#D2886F] transition-colors">
+              💬 AI와 대화로 주제 찾기
+            </span>
+          </button>
         </div>
 
         {/* 안내 — 간결하게 */}
-        <div className="rounded-xl bg-[#f9f9f9] p-3 text-xs text-[#737373] font-light">
-          <div className="flex gap-4 justify-center">
-            <div className="text-center">
-              <span className="text-base block mb-0.5">🏆</span>
-              이슈 월드컵
-            </div>
-            <div className="text-[#D2886F]">→</div>
-            <div className="text-center">
-              <span className="text-base block mb-0.5">💬</span>
-              AI 대화 5단계
-            </div>
-            <div className="text-[#D2886F]">→</div>
-            <div className="text-center">
-              <span className="text-base block mb-0.5">🎯</span>
-              탐구 주제 완성
-            </div>
+        <div className="rounded-xl bg-[#f9f9f9] p-3 text-xs text-[#737373] font-light space-y-2">
+          <div className="flex gap-3 justify-center items-center">
+            <span className="text-base">🏆</span>
+            <span>이슈 월드컵</span>
+            <span className="text-[#D2886F]">→</span>
+            <span className="text-base">💬</span>
+            <span>AI 대화</span>
+            <span className="text-[#D2886F]">→</span>
+            <span className="text-base">🎯</span>
+            <span>주제 완성</span>
+          </div>
+          <div className="flex gap-3 justify-center items-center">
+            <span className="text-base">💬</span>
+            <span>AI 자유 탐색</span>
+            <span className="text-[#D2886F]">→</span>
+            <span className="text-base">🎯</span>
+            <span>주제 완성</span>
           </div>
         </div>
 
